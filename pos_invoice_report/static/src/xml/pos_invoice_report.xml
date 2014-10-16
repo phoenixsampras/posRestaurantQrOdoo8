@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vim:fdl=1:
+-->
+<templates id="template_pos_invoice_custom_view" xml:space="preserve">
+    <t t-extend="PaypadWidget">
+        <t t-jquery="#send_to_kitchen" t-operation="before">
+            <div id="qr_code">
+                <label id="qr_label" for="qr_selection"><b>Dosificacion Tienda   : </b></label>
+                <select  style="height:30px;width:80px;margin-left: 2%;" id="qr_selection">
+                    <option value=""></option>
+                    <t t-foreach="widget.pos.session_qrs" t-as="qr">
+                        <option t-att-value= "qr.id"><t t-esc="qr.nit_code_comapny"/></option>
+                    </t>
+                </select>
+            </div>
+        </t>
+    </t>
+</templates>

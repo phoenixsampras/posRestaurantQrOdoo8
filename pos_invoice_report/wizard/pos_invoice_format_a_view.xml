@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="pos_invoice_format_a_report_view" model="ir.ui.view">
+            <field name="name">POS Invoice Format A</field>
+            <field name="model">pos.invoice.format.a</field>
+            <field name="arch" type="xml">
+                <form string="Pos Invoice Format A" version="7.0">
+                    <group>
+                        <field name="period_id" />
+                    </group>
+                    <footer>
+                        <button special='cancel' string='Cancel' icon='gtk-cancel'/>
+                        or
+                        <button type='object' name='print_invoice_format_a' string='Print' icon='gtk-ok'/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pos_invoice_format_a_report" model="ir.actions.act_window">
+            <field name="name">POS Invoice Format A</field>
+            <field name="res_model">pos.invoice.format.a</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+            name="POS Inovice Format A"
+            parent="point_of_sale.menu_point_config_product"
+            action='action_pos_invoice_format_a_report'
+            id="menu_report_pos_invoice_format_a"/>
+
+    </data>
+</openerp>

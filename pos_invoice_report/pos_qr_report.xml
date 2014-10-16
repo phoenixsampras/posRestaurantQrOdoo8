@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<openerp>
+    <data>
+        <report 
+            id="pos_invoice_anverso_report"
+            model="pos.order"
+            name="pos_anverso_receipt"
+            rml="pos_invoice_report/report/invoice_anverso.rml"
+            string="Anverso"
+            header="False"
+        />
+    </data>
+</openerp>

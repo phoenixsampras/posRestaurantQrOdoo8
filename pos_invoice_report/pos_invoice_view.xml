@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+      <!--
+						  <record model="ir.ui.view" id="stock_location_view_extended">
+            <field name="name">stock.location.extended</field>
+            <field name="model">stock.location</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_location_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form/group" position="after">
+                      <separator string="Dosificacion Tienda" />
+                      <field name="qr_code_ids" colspan="6" nolabel="1"/>
+               </xpath>
+            </field>
+        </record>
+						-->
+        
+		<!-- Inherited view of pos order -->
+		<record model="ir.ui.view" id="view_pos_order_inherit_qr">
+            <field name="name">pos.order.inherit</field>
+            <field name="model">pos.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form" />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                     <field name="nit"/>
+                </field>
+                <xpath expr="//field[@name='phone']" position="after">
+                    <field name="qr_code_id" required="1" />
+                    <field name="legal_customer_name" />
+                    <field name="get_month_first_date" invisible="1"/>
+                    <field name="qr_order_no" />
+                    <field name="amt_thirteen" invisible="1" />
+                </xpath>
+                <field name="session_id" position="attributes">
+                    <attribute name="on_change">onchange_session_id(session_id)</attribute>
+                </field>
+                <xpath expr="//field[@name='date_order']" position="replace">
+                    <field name="date_order" required="1"/>
+                    <field name="control_code" invisible="0" />
+                </xpath>
+            </field>
+        </record>
+        
+        <!--Inherited view of pos config-->
+        <record model="ir.ui.view" id="view_pos_config_inherit_qr">
+            <field name="name">pos.config.inherit</field>
+            <field name="model">pos.config</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="point_of_sale_table.view_pos_config_inherit" />
+            <field name="arch" type="xml">
+                <field name="customer_receipt" position="after">
+                     <field name="is_qr_report"/>
+                </field>
+            </field>
+        </record>
+        
+        <!-- Action for the QR Code -->
+		<record id="action_config_qr_code" model="ir.actions.act_window">
+			<field name="name">Dosificacion Tienda</field>
+			<field name="res_model">qr.code</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<!--Menu for QR Code -->
+        <menuitem id="menu_config_qr_code" action="action_config_qr_code" parent="point_of_sale.menu_point_config_product"/>
+        
+		<!--Inherited view of pos session -->
+        <record model="ir.ui.view" id="view_pos_session_inherit_qr">
+            <field name="name">pos.session.qr</field>
+            <field name="model">pos.session</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_session_form" />
+            <field name="arch" type="xml">
+                <field name="statement_ids" position="after">
+                     <separator string="Dosificacion Tienda"/>
+                     <field name="qr_code_ids"/>
+                </field>
+            </field>
+        </record>
+        
+        <!-- Inherited view of Invoice -->
+     <!--
+					       <record model="ir.ui.view" id="account_invoice_pos">
+            <field name="name">account.invoice.pos</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="inv_from_pos" />
+                </xpath>
+            </field>
+        </record>
+					-->
+      <!--  <menuitem
+            name="POS Inovice Format A"
+            parent="point_of_sale.menu_point_config_product"
+            action='account_invoice_report.action_account_invoice_format_a_report'
+            id="menu_pos_invoice_format_a_report"/> -->
+
+    </data>
+</openerp>

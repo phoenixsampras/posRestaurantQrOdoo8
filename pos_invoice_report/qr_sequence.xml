@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <record id="pos_qr_code_order" model="ir.sequence.type">
+            <field name="name">QR POS Order</field>
+            <field name="code">pos.qr.code.order</field>
+        </record>
+
+        <record id="qr_report_pos_sequrence" model="ir.sequence">
+            <field name="name">QR POS Invoice</field>
+            <field name="code">pos.qr.code.order</field>
+            <field name="padding">1</field>
+        </record>
+        
+
+
+    </data>
+</openerp>
