@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <!-- Inherit view of product.product -->
+
+        <record id='form_view_product_product' model='ir.ui.view'>
+            <field name='name'>form.view.product.product</field>
+                <field name='model'>product.product</field>
+                <field name="inherit_id" ref="product.product_template_form_view"/>
+                <field name='type'>form</field>
+                <field name='arch' type='xml'> 
+                    <xpath expr="/form/sheet/div/div[@name='options']/div/field[@name='sale_ok']" position='after'> 
+                        <field name='is_customizable'/>
+                        <label for="is_customizable"/>
+                    </xpath>
+                    <xpath expr="/form[@string='Product']/sheet/notebook/page[@string='Sales']" position='after'> 
+                        <page string='Product Property' attrs="{'invisible':[('is_customizable','=',False)]}"> 
+                            <field name='property_ids' colspan='4' /> 
+                        </page>
+                    </xpath>
+                 </field>
+        </record>   
+
+    </data>
+</openerp>

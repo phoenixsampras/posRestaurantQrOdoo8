@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="property1" model="product.property">
+          <field name="name">Computer</field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('base.res_partner_1')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('base.res_partner_2')])]"/>
+        </record>
+        
+        <record id="property2" model="product.property">
+          <field name="name"> Grapes </field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('point_of_sale.raisins_noir')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('point_of_sale.raisins_noir')])]"/>
+        </record>
+        
+        <record id="property3" model="product.property">
+          <field name="name"> Lays Pickels </field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('point_of_sale.lays_pickles_250g')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('point_of_sale.lays_pickles_250g')])]"/>
+        </record>
+        
+        <record id="property4" model="product.property">
+          <field name="name">Boni Oranges</field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('point_of_sale.boni_orange')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('point_of_sale.boni_orange')])]"/>
+        </record>
+        
+        <record id="property5" model="product.property">
+          <field name="name"> Carrots </field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('point_of_sale.carotte')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('point_of_sale.carotte')])]"/>
+        </record>
+        
+        <record id="property6" model="product.property">
+          <field name="name"> Chimay Bleu 33cl </field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('point_of_sale.chimay_bleu_33cl')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('point_of_sale.chimay_bleu_33cl')])]"/>
+        </record>
+        
+        <record id="property7" model="product.property">
+          <field name="name"> Coca-Cola Regular 1L </field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('point_of_sale.coca_regular_1l')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('point_of_sale.coca_regular_1l')])]"/>
+        </record>
+        
+        <record id="property8" model="product.property">
+          <field name="name"> Boon Framboise 37.5cl </field>
+          <field name="single_choice">True</field>
+          <field name="product_attribute_ids" eval="[(6,0,[ref('point_of_sale.boon_framboise_37,5cl')])]"/>
+          <field name="product_ids" eval="[(6,0,[ref('point_of_sale.boon_framboise_37,5cl')])]"/>
+        </record>
+        
+    </data>
+ </openerp>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem
+            action="mrp.mrp_bom_form_action" 
+            id="mrp.menu_mrp_bom_form_action"
+            parent="point_of_sale.menu_point_of_sale_product"
+            sequence="10" groups="point_of_sale.group_pos_manager"/>
+    </data>
+</openerp>

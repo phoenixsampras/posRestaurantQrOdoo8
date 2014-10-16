@@ -1,0 +1,19 @@
+<openerp> 
+    <data noupdate="1">
+
+        <record id="seq_type_waiting_queue" model="ir.sequence.type">
+            <field name="name">Waiting Queue</field>
+            <field name="code">waiting.queue</field>
+        </record>
+
+        <record id="seq_waiting_queue" model="ir.sequence">
+            <field name="name">Waiting Queue</field>
+            <field name="code">waiting.queue</field>
+            <field name="prefix">NO/</field>
+            <field name="padding">3</field>
+            <field name="implementation">no_gap</field>
+            <field name="number_increment">1</field>
+        </record> 
+
+    </data>
+</openerp>

@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vim:fdl=1:
+-->
+<templates id="template_pos_custom_view" xml:space="preserve">
+
+    <t t-name="select-order-type">
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <div style="margin-top: 5%;">
+                <button id="dine_in" style="width:100px;height:78px; margin-left: 30%;"><img src="/point_of_sale_table/static/src/img/dinein.jpg" width="80" height="50"/><b>Dine In</b></button><br />
+                <br />
+                <button id="take_away" style="width:100px;height:78px; margin-left: 30%;"><img src="/point_of_sale_table/static/src/img/takeaway.jpg" width="80" height="50"/><b>Take Away</b></button><br />
+                <br />
+                <button id="delivery_order" style="width:100px;height:78px; margin-left: 30%;"><img src="/point_of_sale_table/static/src/img/deliveryorder.jpg" width="80" height="50"/><b>Delivery</b></button><br />
+            </div>
+        </div>
+    </t>
+
+    <t class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" t-name="select-table">
+        <div id="select_table" style="margin-top:10px;overflow-y: auto;">
+            <t t-if ="! table.re_assign and ! table.delivery">
+                <label id= "area_table_label" for="area_table"><b>Area</b></label> 
+                <select  style="height:30px;width:146px;" id="area_table">
+                    <option value=""></option>
+                    <t t-foreach="table.areas" t-as="area">
+                        <option t-att-value= "area.id"><t t-esc="area.name"/></option>
+                    </t>
+                </select>
+                <label for="area_table1">
+                    <b id="take_away">Take Away</b>
+                </label>
+                <input class="chk_take_away" id="chk_chk" type="checkbox" />
+                <br/><br/>
+                <label id="parcel_order_lbl" for="text_box">
+                    <b>Parcel Order : </b>
+                </label>
+                <input type="textbox" id="take_away_txt" style="width:200px;float: right;"></input>
+            </t>
+            <t t-if="table.re_assign and ! table.delivery">
+                <input class="marge_table" type="checkbox" />
+                <br/>
+                <label for="booked_table" id="booked_table_lbl"><b>Booked Table</b></label> 
+                <select  style="height:30px;width:146px;" id="booked_table">
+                    <option value="" disabled = "disabled" selected = "selected">Select Booked Table</option>
+                    <t t-foreach="table.booked_table" t-as="b_table">
+                        <t t-if="b_table[2]">
+                            <option t-att-value= "b_table[2]"><t t-esc="b_table[1]"/></option>
+                        </t>
+                    </t>
+                </select>
+                <t>
+                    <label for="select_waiter" id="select_waiter_lbl"><b>Select Waiter</b></label> 
+                    <select  style="height:30px;width:146px;" id="select_waiter">
+                    <option value=""></option>
+                        <t t-foreach="table.waiter_list" t-as="waiterlist">
+                            <option t-att-value= "waiterlist[0]"><t t-esc="waiterlist[1]"/></option>
+                        </t> 
+                    </select><br /><br />
+                    <table style="border-radius : 1.6em;border-spacing: 10px 10px; box-shadow: 3px 3px 4px 4px #999;" id="booked_table_list">  
+                        <t t-if="table.booked_table" t-foreach="table.booked_table" t-as="option"> 
+                            <tr style="border-radius : 0 0 9px 9px;box-shadow: 1px 1px 4px 4px #999;height:10px;"> 
+                                <td style="border-radius :1.6em; box-shadow: 1px 1px 4px 4px #999;">
+                                   <input class="field_boolean" type="checkbox" t-att-id="option[0]" t-att-value="option[1]" style="height:25px; width:25px"/>
+                                </td>
+                                <td style="width:160px; border-radius : 1.6em;box-shadow: 1px 1px 4px 4px #999;text-align: center;"><b><t t-esc="option[1]"/></b></td>
+                            </tr>
+                        </t>
+                    </table>
+                </t>
+            </t>
+            <table style="border-radius : 1.6em;border-spacing: 10px 10px; box-shadow: 3px 3px 4px 4px #999;" id="table_list">  
+                <t t-if="table.empty_table" t-foreach="table.empty_table" t-as="option">
+                    <t t-if="option[5]">
+                        <tr t-att-class="'area_'+option[6]" style="border-radius : 0 0 9px 9px;box-shadow: 1px 1px 4px 4px #999;height:10px;background:red;background: linear-gradient(to bottom, #FFADAD, #FF3333);"> 
+                            <td style="border-radius :1.6em; box-shadow: 1px 1px 4px 4px #999;">
+                                <input class="field_boolean" type="checkbox" t-att-id="option[0]" t-att-value="option[1]" style="height:25px; width:25px"/>
+                            </td>
+                            <td style="width:160px; border-radius : 1.6em;box-shadow: 1px 1px 4px 4px #999;text-align: center;"><b><t t-esc="option[1]"/></b></td>
+                            <td style="border : 2px solid; box-shadow: 3px 3px 10px 5px #999;width: 100px;"><img style="height:15px" src="/web/static/src/img/icons/stock_person.png"/>
+                                <b><span t-att-id="option[0]+'_leaft_seat'"><t t-esc="option[3]"/></span><input type="textbox" t-att-booked="option[4]" t-att-id="option[0]+'_reserv_sit'" t-att-value="option[3]" style="width:30px;float: right;"></input></b>
+                            </td>
+                        </tr>
+                    </t>
+                    <t t-if="!option[5]">
+                        <tr t-att-class="'area_'+option[6]" style="border-radius : 0 0 9px 9px;box-shadow: 1px 1px 4px 4px #999;height:10px;background:green;background: linear-gradient(to bottom, #80CC80, #009900);"> 
+                            <td style="border-radius :1.6em; box-shadow: 1px 1px 4px 4px #999;">
+                                <input class="field_boolean" type="checkbox" t-att-id="option[0]" t-att-value="option[1]" style="height:25px; width:25px"/>
+                            </td>
+                            <td style="width:160px; border-radius : 1.6em;box-shadow: 1px 1px 4px 4px #999;text-align: center;"><b><t t-esc="option[1]"/></b></td>
+                            <td style="border : 2px solid; box-shadow: 3px 3px 10px 5px #999;width: 100px;"><img style="height:15px" src="/web/static/src/img/icons/stock_person.png"/>
+                                <b><span t-att-id="option[0]+'_leaft_seat'"><t t-esc="option[3]"/></span><input type="textbox" t-att-booked="option[4]" t-att-id="option[0]+'_reserv_sit'" t-att-value="option[3]" style="width:30px;float: right;"></input></b>
+                            </td>
+                        </tr>
+                    </t>
+                </t>
+            </table>
+
+            <t t-if = "table.delivery">
+                <div id="add_partner1">
+                    <div id="dialog_partner"><div id="chiled_partner"></div>
+                        <label for="partner_selection1"><b>Customer : </b></label>
+                        <select  style="height:30px;width:146px;" id="partner_selection1">
+                            <option value=""></option>
+                            <t t-foreach="table.partner_list" t-as="partner">
+                                <option t-att-value= "partner.name +'_'+ partner.phone"><t t-esc="partner.name"/></option>
+                            </t>
+                        </select>
+                    </div>
+                    <br />
+                    <label id="delivery_order_person_number" for="text_box">
+                        <b>Phone : </b>
+                    </label>
+                    <input type="textbox" id="person_number_txt" style="height:25px;width:125px;padding: 4px;border: 1px solid #CCC;margin-left: 32px;">
+                    </input>
+                    <br />
+                    <br />
+                    <div id="add_driver">
+                    <label id="driver" for="driver">
+                        <b>Delivery Boy : </b>
+                    </label>
+                    <select  style="height:35px;width:135px;margin-left: -2px;" id="driver_name">
+                        <option value=""></option>
+                            <t t-foreach="table.user_list" t-as="userlist">
+                                <option t-att-value= "userlist.id"><t t-esc="userlist.name"/></option>
+                            </t>
+                    </select><br />
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <t t-extend="OrderButtonWidget">
+        <t t-jquery=".select-order" t-operation="replace">
+            <span class="order-button select-order" t-att-id="widget.order.get('name').replace(' ', '_')" t-att-name="widget.order.get('creationDate').toString('t')" t-att-data="widget.order.get('reserved_seat')">
+                <t t-if="widget.order.get_client()">
+                    <i class='fa fa-user'/>
+                </t>
+                <t t-if=" ! widget.order.get_client()">
+                    <i class='fa fa-user'/>
+                    <t t-esc="widget.order.get('creationDate').toString('t')"/>
+                </t>
+                <t t-if="widget.order.get_client()">
+                    <t t-esc="(widget.order.get_client() ? widget.order.get_client_name()+' : ':'Unknown Customer: ') + widget.order.get('creationDate').toString('t')"/>
+                </t>
+            </span>
+        </t>
+    </t>
+
+    <t t-extend="PaypadWidget">
+        <t t-jquery=".paypad" t-operation="append">
+            <div id="add_user">
+                <label id="user_selection_label" for="user_selection"><b>Salesman   : </b></label>
+                <select  style="height:30px;width:135px;" id="user_selection">
+                    <option value=""></option>
+                    <t t-foreach="widget.pos.user_list" t-as="userlist">
+                        <option t-att-value= "userlist.id"><t t-esc="userlist.name"/></option>
+                    </t>
+                </select>
+            </div>
+            <div>
+                <label id="pricelist_selection_label" for="pricelist_selection"><b>Pricelist   : </b></label>&amp;nbsp;&amp;nbsp;&amp;nbsp;
+                <select  style="height:30px;width:135px;" id="pricelist_selection">
+                    <option value=""></option>
+                        <t t-foreach="widget.pos.pricelists" t-as="pricelist">
+                            <option t-att-value= "pricelist.id +'-'+ pricelist.name +'-'+ pricelist.currency_id[0]"><t t-esc="pricelist.name"/></option>
+                        </t>
+                </select>
+            </div>
+
+            <button id="send_to_kitchen"><img src="/web/static/src/img/icons/gtk-jump-to.png"/> Send To Kitchen</button>
+            <button id="print_receipt_button"><img src="/web/static/src/img/icons/gtk-print.png"/> Print Receipt</button>
+            <button id="order_confirm_button"><img src="/web/static/src/img/icons/gtk-print.png"/> Order Confirm</button>
+            <t t-if="widget.pos.config.customer_receipt">
+               <button id="print_customer_receipt"><img src="/web/static/src/img/icons/gtk-print.png"/> Customer Receipt</button><br/>
+           </t>
+        </t>
+    </t>
+
+    <t t-extend="PosTicket">
+        <t t-jquery=".pos-sale-ticket" t-operation="replace">
+            <div class="pos-sale-ticket">
+                <div class="pos-center-align"><t t-esc="new Date().toString(Date.CultureInfo.formatPatterns.shortDate + ' ' +
+                   Date.CultureInfo.formatPatterns.longTime)"/> <t t-esc="order.get('name')"/></div>
+                <br />
+                <t t-if="! widget.pos.kitchen_receipt">
+                    <t t-esc="widget.pos.company.name"/><br />
+                    Phone: <t t-esc="widget.pos.company.phone || ''"/><br />
+                    User: <t t-esc="widget.pos.cashier ? widget.pos.cashier.name : widget.pos.user.name"/><br />
+                    Shop: <t t-esc="widget.pos.shop.name"/><br />
+                </t>
+                <t t-if="! widget.pos.kitchen_receipt">
+                    Tablel: <t t-esc="order.attributes.creationDate"/>
+                    <br />
+                </t>
+                <br />
+                <t t-if="order.get_client()">
+                    Customer: <t t-esc="order.get_client_name()"/>
+                    <br />
+                </t>
+                <br />
+                <t t-if="widget.pos.config.receipt_header">
+                    <div style='text-align:center'>
+                        <t t-esc="widget.pos.config.receipt_header" />
+                    </div>
+                    <br />
+                </t>
+                <t t-if="widget.pos.kitchen_receipt">
+                    <table>
+                        <t t-if="orderlines">
+                            <tr style="background: lightgray;">
+                                <td>
+                                    <b><t t-esc="orderlines[0].get_categ_name()"/></b>
+                                </td>
+                            </tr>
+                        </t>
+                        <colgroup>
+                            <col width='50%' />
+                            <col width='50%' />
+                        </colgroup>
+
+                        <tr t-foreach="orderlines" t-if="orderline.get_print_orderline()" t-as="orderline">
+                            <td>
+                                <t t-esc="orderline.get_product().display_name"/>
+                                <t t-if="orderline.get_text()">(wait)</t>
+                                <t t-if="orderline.get_property_desc()"><br/><font size="2px">(<t t-esc="orderline.get_property_desc()"/>)</font></t>
+                            </td>
+                            <td class="pos-right-align">
+                                <t t-esc="orderline.get_quantity_str_with_unit()"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                </t>
+                <t t-if="! widget.pos.kitchen_receipt">
+                    <table>
+                        <colgroup>
+                            <col width='50%' />
+                            <col width='25%' />
+                            <col width='25%' />
+                        </colgroup>
+                        <tr t-foreach="orderlines" t-as="orderline">
+                            <td>
+                                <t t-esc="orderline.get_product().display_name"/>
+                                <t t-if="orderline.get_discount() > 0">
+                                   <div class="pos-disc-font">
+                                       With a <t t-esc="orderline.get_discount()"/>% discount
+                                   </div>
+                                </t>
+                            </td>
+                            <td class="pos-right-align">
+                                <t t-esc="orderline.get_quantity_str_with_unit()"/>
+                            </td>
+                            <td class="pos-right-align">
+                                <t t-esc="widget.format_currency(orderline.get_display_price())"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table>
+                        <tr>
+                            <td>Subtotal:</td>
+                                <td class="pos-right-align">
+                                    <t t-esc="widget.format_currency(order.getSubtotal())"/>
+                            </td>
+                        </tr>
+                        <t t-foreach="order.getTaxDetails()" t-as="taxdetail">
+                            <tr>
+                                <td><t t-esc="taxdetail.tax.name" /></td>
+                                <td class="pos-right-align">
+                                    <t t-esc="widget.format_currency(taxdetail.amount)" />
+                                </td>
+                            </tr>
+                        </t>
+                        <tr>
+                            <td>Discount:</td>
+                            <td class="pos-right-align">
+                                <t t-esc="widget.format_currency(order.getDiscountTotal())"/>
+                            </td>
+                        </tr>
+                        <tr class="emph">
+                            <td>Total:</td>
+                            <td class="pos-right-align">
+                                <t t-esc="widget.format_currency(order.getTotalTaxIncluded())"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table>
+                        <tr t-foreach="paymentlines" t-as="line">
+                            <td>
+                                <t t-esc="line.name"/>
+                            </td>
+                            <td class="pos-right-align">
+                                <t t-esc="widget.format_currency(line.get_amount())"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table t-if="! order.customer_receipt">
+                        <tr><td>Change:</td><td class="pos-right-align">
+                            <t t-esc="widget.format_currency(order.getChange())"/>
+                            </td></tr>
+                    </table>
+                    <t t-if="widget.pos.config.receipt_footer">
+                        <br />
+                        <div style='text-align:center'>
+                            <t t-esc="widget.pos.config.receipt_footer" />
+                        </div>
+                    </t>
+                </t>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="PosWidget">
+        <t t-jquery=".pos-rightheader" t-operation="replace">
+            <div class="pos-rightheader">
+                <table>
+                    <tr>
+                        <td>
+                            <div id="options">
+                                <button class="oe_dropdown_toggle oe_dropdown_arrow" >Options</button>
+                                    <ul class="oe_dropdown_menu" >
+                                        <li class="oe_sidebar_print" id="re_assign_order">Re-assign Order</li>
+                                        <li class="oe_sidebar_print" id="merge_order">Merge Order</li>
+                                        <li class="oe_sidebar_print" id="synchronize_order">Synchronize Order</li>
+                                        <li class="oe_sidebar_print" id="re_assign_waiter">Re-assign Waiter</li>
+                                    </ul>
+                            </div>
+                        </td>
+                        <td>
+                            <div id="order-selector">
+                                <span class="orders"></span>
+                                <span class="order-button square neworder-button1"><i class='fa fa-plus' /></span>
+                                <span class="order-button square deleteorder-button"><i class='fa fa-minus' /></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+    </t>
+
+    <t t-name="select-properties"> 
+        <table id="select_product_property" style="border-spacing:10px 10px;">
+            <t t-if="product.is_product_description">
+                <tr>
+                    <td>
+                       <br/><div id="add_description">
+                            <label id="free_text_lbl" for="desc_selection"><b>Description   : </b></label>
+                            <select  style="height:30px;width:135px;" id="desc_selection">
+                                <option value=""></option>
+                                <t t-foreach="widget.pos.gen_product_description" t-as="desclist">
+                                    <option t-att-value= "desclist.id"><t t-esc="desclist.name"/></option>
+                                </t>
+                            </select>
+                        </div><br/>
+                    </td>
+                </tr>
+            </t>
+            <t t-if="widget.free_text_bool">
+                <t  t-foreach="widget.final_property" t-as="properties"> 
+                  <tr> 
+                        <t t-foreach="properties" t-as="property"> 
+                            <td valign="top" width='500px'>
+                                <t t-if="property" t-foreach="property" t-as="prop">
+                                    <FIELDSET style="border-radius : 0.0em;box-shadow: 5px 5px 1px 1px #999;"><LEGEND><strong><b><t t-esc="prop"/></b></strong></LEGEND>
+                                        <table >
+                                        <t t-if="property[prop]" t-foreach="property[prop].attirbute" t-as="attr"><tr> 
+                                            <t t-if="attr['image']">
+                                            <td width="40px" style="border-radius : 0.0em;box-shadow: 1px 1px 2px 2px #999;"><img t-att-src="'data:image/gif;base64,'+ attr['image']" style="max-height: 30px;max-width:  50px;"/></td>
+                                            </t>
+                                            <t t-if="! attr['image']">  
+                                                <td width="40px" style="border-radius : 0.0em;box-shadow: 1px 1px 2px 2px #999;"><img src="/point_of_sale_table/static/src/img/pepper1.png" style="max-height: 30px;max-width:  50px;" /></td>
+                                            </t>
+                                            <td width="270px" style="border-radius : 1.6em;box-shadow: 1px 1px 2px 2px #999; text-align: center;"><b><t t-esc="attr['name']"/></b></td>
+                                            <td width="90px" style="border-radius : 1.6em;box-shadow: 1px 1px 2px 2px #999; text-align: center;"><b><t t-esc="attr['price']"/></b></td>
+                                            <td width="30px" style="border-radius : 1.6em;box-shadow: 1px 1px 2px 2px #999; text-align: center;">   
+                                                <t t-if="property[prop].single">    
+                                                    <input t-if="attr['checked']"  class="field_boolean" t-att-checked="attr['checked']" type="radio" t-att-id="attr['id']" t-att-name="prop" t-att-price="attr['price']" t-att-value="attr['price'] +'_'+ attr['name'] "/>
+                                                    <input t-if="! attr['checked']"  class="field_boolean" type="radio" t-att-id="attr['id']" t-att-name="prop" t-att-price="attr['price']" t-att-value="attr['price'] +'_'+ attr['name'] "/>
+                                                </t>
+                                                <t t-if="!property[prop].single">
+                                                        <input t-if="attr['checked']" class="field_boolean" t-att-checked="attr['checked']" type="checkbox" t-att-id="attr['id']" t-att-price="attr['price']" t-att-value="attr['price'] +'_'+ attr['name'] "/>
+                                                        <input t-if="! attr['checked']" class="field_boolean" type="checkbox" t-att-id="attr['id']" t-att-price="attr['price']" t-att-value="attr['price'] +'_'+ attr['name'] "/>
+                                                </t>
+                                            </td>
+                                           </tr>
+                                        </t>
+                                        </table>
+                                    </FIELDSET><br/>
+                                </t>
+                            </td>
+                        </t>
+                    </tr>
+                </t>
+            </t>
+        </table>
+    </t>
+
+    <t t-extend="Orderline">
+        <t t-jquery=".product-name" t-operation="replace"> 
+            <span class="product-name">
+                <t t-esc="line.get_product().display_name"/>
+                <t t-if="line.get_property_desc()"><br/><font size="2px">(<t t-esc="line.get_property_desc()"/>)</font></t>
+            </span>
+        </t>
+        <t t-jquery=".info-list" t-operation="replace"> 
+            <ul class="info-list">
+                <t t-if="line.get_quantity_str() !== '1' || line.selected ">
+                    <li class="info">
+                        <em>
+                            <t t-esc="line.get_quantity_str()" />
+                        </em>
+                        <t t-esc="line.get_unit().name" />
+                        at
+                        <t t-esc="widget.format_currency(line.get_unit_price())" />
+                        /
+                        <t t-esc="line.get_unit().name" />
+                    </li>
+                </t>
+                <t t-if="line.get_discount_str() !== '0'">
+                    <li class="info">
+                        With a 
+                        <em>
+                            <t t-esc="line.get_discount_str()" />%
+                        </em>
+                        discount
+                    </li>
+                </t>
+            </ul>
+        </t>
+    </t>
+
+    <t t-extend="HeaderButtonWidget">
+        <t t-jquery=".header-button" t-operation="replace"> 
+            <div class="header-button" style="margin-top :-52px;height:52px">
+                <t t-esc="widget.label" />
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="SynchNotificationWidget">
+        <t t-jquery=".js_synch" t-operation="replace"> 
+            <div class="oe_status js_synch"  style="margin-top: -52px;margin-right: 65px;">
+                <span class='js_msg oe_hidden'>0</span>
+                <div class="js_connected oe_icon oe_green">
+                    <i class='fa fa-fw fa-rss'></i>
+                </div>
+                <div class="js_connecting oe_icon oe_hidden">
+                    <i class='fa fa-fw fa-spin fa-spinner'></i>
+                </div>
+                <div class="js_disconnected oe_icon oe_red oe_hidden">
+                    <i class='fa fa-fw fa-rss'></i>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="SplitOrderline">
+        <t t-jquery=".product-name" t-operation="replace"> 
+            <span class="product-name">
+                <t t-esc="line.get_product().display_name"/>
+            </span>
+        </t>
+    </t>
+
+    <t t-name="Pincode">
+        <div>
+            <label for="inputcode"><b>Enter Pin Code</b></label>
+            <input id="inputcode" type="password" style="width: 149px;float: right"/>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,195 @@
+<openerp> 
+    <data noupdate="1">
+
+        <record id="area1" model="area.area">
+            <field name="name">Area1</field>
+            <field name="code">a1</field>
+        </record>
+
+        <record id="area2" model="area.area">
+            <field name="name">Area2</field>
+            <field name="code">a2</field>
+        </record>
+
+        <record id="area3" model="area.area">
+            <field name="name">Area3</field>
+            <field name="code">a3</field>
+        </record>
+
+        <record id="table1" model="table.master">
+            <field name="name">Table1</field>
+            <field name="code">t1</field>
+            <field name="capacities">6</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area1"/>
+        </record>
+
+        <record id="table2" model="table.master">
+            <field name="name">Table2</field>
+            <field name="code">t2</field>
+            <field name="capacities">5</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area1"/>
+        </record>
+
+        <record id="table3" model="table.master">
+            <field name="name">Table3</field>
+            <field name="code">t3</field>
+            <field name="capacities">7</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area1"/>
+        </record>
+
+        <record id="table4" model="table.master">
+            <field name="name">Table4</field>
+            <field name="code">t4</field>
+            <field name="capacities">4</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area1"/>
+        </record>
+
+        <record id="table5" model="table.master">
+            <field name="name">Table5</field>
+            <field name="code">t5</field>
+            <field name="capacities">3</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area2"/>
+        </record>
+
+        <record id="table6" model="table.master">
+            <field name="name">Table6</field>
+            <field name="code">t6</field>
+            <field name="capacities">2</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area2"/>
+        </record>
+
+        <record id="table7" model="table.master">
+            <field name="name">Table7</field>
+            <field name="code">t7</field>
+            <field name="capacities">5</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area2"/>
+        </record>
+
+        <record id="table8" model="table.master">
+            <field name="name">Table8</field>
+            <field name="code">t8</field>
+            <field name="capacities">8</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area2"/>
+        </record>
+
+        <record id="table9" model="table.master">
+            <field name="name">Table9</field>
+            <field name="code">t9</field>
+            <field name="capacities">4</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area3"/>
+        </record>
+
+        <record id="table10" model="table.master">
+            <field name="name">Table10</field>
+            <field name="code">t10</field>
+            <field name="capacities">6</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area3"/>
+        </record>
+
+        <record id="table11" model="table.master">
+            <field name="name">Table11</field>
+            <field name="code">t11</field>
+            <field name="capacities">8</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area3"/>
+        </record>
+
+        <record id="table12" model="table.master">
+            <field name="name">Table12</field>
+            <field name="code">t12</field>
+            <field name="capacities">4</field>
+            <field name="users_ids" eval="[(6,0,[ref('base.user_root')])]"/>
+            <field name="area_id" ref="point_of_sale_table.area3"/>
+        </record>
+
+        <record model="pos.order.line.state" id="state_in_queue">
+            <field name="name">In Queue</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record model="pos.order.line.state" id="state_in_progress">
+            <field name="name">In Progress</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record model="pos.order.line.state" id="state_in_done">
+            <field name="name">Is Done</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record model="pos.order.line.state" id="state_in_served">
+            <field name="name">Is Served</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record model="pos.order.line.state" id="state_in_waiting">
+            <field name="name">Is Waiting</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="Queue1" model="waiting.queue">
+            <field name="sequence">1</field>
+            <field name="no_of_person">4</field>
+            <field name="partner_id" ref="base.res_partner_10"/>
+        </record>
+
+        <record id="Queue2" model="waiting.queue">
+            <field name="sequence">2</field>
+            <field name="no_of_person">10</field>
+            <field name="partner_id" ref="base.res_partner_11"/>
+        </record>
+
+        <record id="Queue3" model="waiting.queue">
+            <field name="sequence">3</field>
+            <field name="no_of_person">4</field>
+            <field name="partner_id" ref="base.res_partner_12"/>
+        </record>
+
+        <record id="Queue4" model="waiting.queue">
+            <field name="sequence">4</field>
+            <field name="no_of_person">1</field>
+            <field name="partner_id" ref="base.res_partner_13"/>
+        </record>
+
+        <record id="Queue5" model="waiting.queue">
+            <field name="sequence">5</field>
+            <field name="no_of_person">8</field>
+            <field name="partner_id" ref="base.res_partner_14"/>
+        </record>
+
+        <record id="Queue6" model="waiting.queue">
+            <field name="sequence">6</field>
+            <field name="no_of_person">11</field>
+            <field name="partner_id" ref="base.res_partner_15"/>
+        </record>
+
+        <record id="Queue7" model="waiting.queue">
+            <field name="sequence">7</field>
+            <field name="no_of_person">9</field>
+            <field name="partner_id" ref="base.res_partner_16"/>
+        </record>
+
+        <record id="Queue8" model="waiting.queue">
+            <field name="sequence">8</field>
+            <field name="no_of_person">12</field>
+            <field name="partner_id" ref="base.res_partner_17"/>
+        </record>
+
+        <record id="Queue9" model="waiting.queue">
+            <field name="sequence">9</field>
+            <field name="no_of_person">13</field>
+            <field name="partner_id" ref="base.res_partner_18"/>
+        </record>
+
+    </data>
+</openerp>

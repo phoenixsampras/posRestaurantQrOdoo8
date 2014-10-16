@@ -1,0 +1,585 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_product_popup_inherit">
+            <field name="name">product.template.popup.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_template_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="/form[@string='Product']/sheet/div[@class='oe_left']/div[@name='options']/div/label[@for='sale_ok']" position='after'> 
+                    <field name='is_product_description'/>
+                    <label for="is_product_description"/>
+                    <field name='is_product_wait'/>
+                    <label for="is_product_wait"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_pos_order_filter" model="ir.ui.view">
+            <field name="name">pos.order.list.select</field>
+            <field name="model">pos.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <field name="name" string="Sales Order"/>
+                    <field name="date_order"/>
+                    <field name="pos_reference"/>
+                    <filter icon="terp-document-new" name="filter_draft" string="New" domain="[('state','=','draft')]"/>
+                    <filter icon="gtk-apply" string="Done" domain="[('state','in',('paid','invoiced','done'))]"/>
+                    <filter icon="terp-check" string="Invoiced" domain="[('state','=','invoiced')]"/>
+                    <filter icon="gtk-convert" string="Posted" domain="[('state','=','done')]"/>
+                    <field name="user_id"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Order Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_order'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sale_order_line_search_view">
+            <field name="name">pos.order.line.search</field>
+            <field name="model">pos.order.line</field>
+            <field name="arch" type="xml">
+                <search string="Search POS Order Line">
+                    <field name="categ_id" filter_domain="[('categ_id','child_of',self)]" string="Category"/>
+                    <field name="order_id" string="Orders"/>
+                    <group expand="0" string="Group By...">
+                        <filter icon="terp-stock_symbol-selection" string="Order" context="{'group_by':'order_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id='action_pos_order_line_view_extended' model='ir.actions.act_window'>
+            <field name='name'>Kitchen Screen</field>
+            <field name='res_model'>pos.order.line</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>kanban,tree,form</field>
+            <field name='auto_refresh'>5000</field>
+            <field name='search_view_id' ref="sale_order_line_search_view"/>
+            <field name="context">{'search_default_open_true':True,'search_default_order_id':[active_id]}</field>
+            <field name="domain">[('order_id.state', '=', 'draft'), ('order_line_state_id','!=',4)]</field>
+        </record>
+
+        <record model="ir.ui.view" id="view_pos_order_tree_inherit">
+            <field name="name">pos.order.inherit</field>
+            <field name="model">pos.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree" />
+            <field name="arch" type="xml">
+                <field name="pos_reference" position="after">
+                    <field name="table_name"/>
+                </field>
+                <field name="session_id" position="after">
+                     <button name="%(point_of_sale.action_pos_payment)d" string="Payment" icon="gtk-apply" class="oe_highlight" type="action" states="draft" context="{'pos_session_id' : session_id}"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_pos_pos_extended_form">
+            <field name="name">pos.order.extended</field>
+            <field name="model">pos.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="pflag"/>
+                    <field name="parcel" attrs="{'invisible': [('pflag','=', False)]}"/>
+                    <field name="phone"/>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Extra Info']/group/field[@name='pos_reference']" position="before">
+                    <field name='driver_name' />
+                </xpath>
+                <xpath expr="//notebook/page[@string='Products']" position="after">
+                    <page string="Tables">
+                        <field name="reserved_table_ids">
+                            <tree editable="bottum">
+                                <field name="table_id"/>
+                                <field name="order_id"/>
+                                <field name="reserver_seat"/>
+                            </tree> 
+                        </field>
+                    </page>
+                </xpath>
+                <xpath expr="//field[@name='lines']/tree/field[@name='product_id']" position="after">
+                    <field name="property_description"/>
+                </xpath>
+                <xpath expr="//field[@name='lines']/form/group[1]/field[@name='notice']" position="before">
+                    <field name="product_ids" colspan="4" nolable="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="table_master_form_view" model="ir.ui.view">
+            <field name="name">table_master.form</field>
+            <field name="model">table.master</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Table Master">
+                    <header>
+                        <button name="action_available" icon="gtk-execute" string="Available" type="object" states="reserved" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" statusbar_visible="available,reserved" statusbar_colors='{"reserved":"red"}'/>
+                    </header>
+                    <sheet> 
+                        <div class="oe_edit_only">
+                        <label for="name" string="Description"/>
+                        </div>
+                        <div class='oe_title'>
+                           <group colspan = "4">
+                               <h1><field name="name"/></h1>
+                           </group>
+                        </div>
+                        <group col="4">
+                            <field name="area_id"/>
+                            <field name="code"/>
+                            <field name="capacities"/>
+                            <field name="available_capacities"/>
+                        </group>
+                        <group cols="4">
+                               <h2><label string="Users"/></h2><newline/>
+                            <field name="users_ids" widgets="many2many" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="table_master_tree_view" model="ir.ui.view">
+            <field name="name">table_master.tree</field>
+            <field name="model">table.master</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Table Master">
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="capacities"/>
+                    <field name="state"/>
+                    <button name="action_available" icon="gtk-apply" string="Available" type="object" states="reserved" class="oe_highlight"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="table_master_action" model="ir.actions.act_window">
+            <field name="name">Table Master</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">table.master</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="False" />
+        </record>
+ 
+        <menuitem action="table_master_action" id="menu_table_master"
+            parent="point_of_sale.menu_point_config_product" name="Table Master" groups="point_of_sale.group_pos_manager" />
+
+        <record model="ir.ui.view" id="view_pos_config_inherit">
+            <field name="name">pos.config.inherit</field>
+            <field name="model">pos.config</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_config_form" />
+            <field name="arch" type="xml">
+                <group string="Features" position="before">
+                    <group string="Button Configuration" col="4">
+                        <field name="display_send_to_kitchen"/>
+                        <field name="display_print_receipt"/>
+                        <field name="customer_receipt"/>
+                        <field name="allow_salesman"/>
+                        <field name="manage_delivery"/>
+                        <field name="pincode"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+        <record id="area_area_form_view" model="ir.ui.view">
+            <field name="name">area.arear.form</field>
+            <field name="model">area.area</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Area">
+                    <sheet> 
+                        <div class="oe_edit_only">
+                        <label for="name" string="Description"/>
+                        </div>
+                        <div class='oe_title'>
+                           <group colspan = "4">
+                               <h1><field name="name"/></h1>
+                           </group>
+                        </div>
+                        <group>
+                            <field name="code"/> 
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="area_area_tree_view" model="ir.ui.view">
+            <field name="name">area.area.tree</field>
+            <field name="model">area.area</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Area">
+                    <field name="name" />
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="area_area_action" model="ir.actions.act_window">
+            <field name="name">Area</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">area.area</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="False" />
+        </record>
+
+        <menuitem action="area_area_action" id="menu_area_area"
+            parent="point_of_sale.menu_point_config_product" sequence="0" groups="point_of_sale.group_pos_user"/>
+
+        <record model="ir.ui.view" id="view_pos_category_inherit">
+            <field name="name">pos.category.inherit</field>
+            <field name="model">pos.category</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="point_of_sale.product_pos_category_form_view" />
+            <field name="arch" type="xml">
+                <field name="sequence" position="after">
+                    <field name="split" attrs="{'invisible': [('parent_id','=',True)]}"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_description_form_view" model="ir.ui.view">
+            <field name="name">product.description.form</field>
+            <field name="model">product.description</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Description">
+                    <sheet> 
+                        <div class="oe_edit_only">
+                        <label for="name" string="Description"/>
+                        </div>
+                        <div class='oe_title'>
+                           <group colspan = "4">
+                               <h1><field name="name"/></h1>
+                           </group>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_description_tree_view" model="ir.ui.view">
+            <field name="name">product.description.tree</field>
+            <field name="model">product.description</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Description">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_description_action" model="ir.actions.act_window">
+            <field name="name">Description</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.description</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" eval="False" />
+        </record>
+
+        <menuitem action="product_description_action" id="menu_product_description"
+            parent="point_of_sale.menu_point_config_product" sequence="0"   groups="point_of_sale.group_pos_user"/>
+
+        <record id='pos_order_line_tree_view' model='ir.ui.view'>
+            <field name='name'>pos.order.line.tree.view</field>
+            <field name='model'>pos.order.line</field>
+            <field name='type'>tree</field>
+            <field name='arch' type='xml'>
+                <tree string="POS Orders lines">
+                    <field name="order_id" />
+                    <field name="create_date" />
+                    <field name="product_id" />
+                    <field name="property_description"/>
+                    <field name="qty" />
+                    <field name="price_unit" />
+                </tree>
+            </field>
+        </record>
+
+        <record id='pos_order_line_form_view' model='ir.ui.view'>
+            <field name='name'>pos.order.line.form.view</field>
+            <field name='model'>pos.order.line</field>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+                <form string='Product Information'>
+                    <header>
+                        <field name="order_line_state_id"
+                        widget="statusbar" clickable="True" />
+                    </header>
+                    <sheet>
+                        <div>
+                            <h1><field name="order_id" readonly="1"/></h1>
+                        </div>
+                        <div class='oe_title'>
+                            <div class="oe_edit_only">
+                                <label for="product_id" string="Product Name"/>
+                            </div>
+                            <group colspan='2' cols='2' >
+                            <h1><field name='product_id'  width='200'/></h1>
+                            </group>
+                        </div>
+                        <notebook>
+                            <page string="Information">
+                                <group>
+                                <group cols="2">
+                                    <field name="qty" />
+                                    <field name="price_unit" />
+                                    <field name="discount" />
+                                    <field name="price_subtotal"/>
+                                    <field name="price_subtotal_incl"/>
+                                </group>
+                                <group cols="2">
+                                    <field name="company_id" />
+                                    <field name="create_date" />
+                                    <field name='color'/>
+                                </group>
+                                <group colspan="4">
+                                <h2><label for="property_description" string="Product Property"/></h2><newline/>
+                                <field name="property_description" nolabel="1"/><newline/>
+                                </group>
+                                 <group colspan="4">
+                                <h2><label for="notice" string="Notice"/></h2><newline/>
+                                <field name="notice" nolabel="1"/><newline/>
+                                </group>
+                                </group>
+                            </page>
+                        </notebook>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_pos_order_line_kanban">
+            <field name="name">pos.order.line.kanban.view</field>
+            <field name="model">pos.order.line</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="order_line_state_id"
+                        class="oe_notes oe_kanban_quickcreate_textarea">
+                    <field name='color' />
+                    <field name="company_id" />
+                    <field name="product_id" />
+                    <field name="price_unit" />
+                    <field name="qty" />
+                    <field name="order_id" />
+                    <field name="create_date" />
+                    <field name="property_description" />
+                    <field name="order_line_state_id" />
+                    <field name="partner_id" />
+                    <field name="order_name" />
+                    <field name="table_name"/>
+                    <field name="parcel"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_global_click_edit oe_semantic_html_override oe_kanban_card oe_kanban_card_fancy">
+                                <div class="oe_dropdown_kanban">
+                                          <!-- dropdown menu -->
+                                    <span class="oe_dropdown_toggle">
+                                    <span class="oe_e">í</span>
+                                    <ul class="oe_dropdown_menu">
+                                        <li><a type="delete"> Delete </a></li>
+                                        <li>
+                                            <ul class="oe_kanban_colorpicker" data-field="color" />
+                                        </li>
+                                    </ul>
+                                    </span>
+                                    <div style="display: inline"></div>
+                                </div>
+                                <div style="min-height:80px;">
+                                    <div class="oe_left">
+                                        <img style="height:50px;width: 40px;"
+                                            t-att-src="kanban_image('product.product', 'image_medium', record.product_id.raw_value)"
+                                            class="oe_kanban_image" /><br/>
+                                    </div>
+                                    <a name="forward_change_state" id="kanban_change_state" type="object" class="oe_bold" style="float:right;margin-left:10px;" sting="Go-Forward">
+                                        <img src="/web/static/src/img/icons/gtk-go-forward.png"/> 
+                                    </a>
+                                    <a name="back_change_state" id="kanban_change_state" type="object" class="oe_bold" style="float:right;" string="Go-Back">
+                                        <img src="/web/static/src/img/icons/gtk-go-back.png"/>
+                                    </a>
+                                    <div style="color:blue;"><field name="table_name"/></div>
+                                    <div style="color:blue;"><t t-if="record.parcel.value"><field name="parcel" /><br/></t></div>
+                                    <t t-if="partner_id">
+                                        <field name="partner_id" /><br/>
+                                    </t>
+                                    <b>
+                                        <field name="product_id" />
+                                    </b><br/>
+                                    <h4>Qty :-<field name="qty"/></h4><br/>
+                                    <t t-if="record.partner_id.raw_value">
+                                        <h4>Customer :- <field name="partner_id" /></h4>
+                                    </t>
+                                    <h4>Order Name :-<field name="order_name" /></h4>
+                                    <h4>Description :-
+                                        <t t-if="record.property_description.raw_value">
+                                            (
+                                        </t>
+                                        <field name="property_description" />
+                                        <t t-if="record.property_description.raw_value">
+                                            )
+                                        </t>
+                                    </h4>
+                                    <br/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id='action_pos_order_line_view' model='ir.actions.act_window'>
+            <field name='name'>Kitchen Screen</field>
+            <field name='res_model'>pos.order.line</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>kanban,tree,form</field>
+            <field name='auto_refresh'>5000</field>
+            <field name="domain">[('order_id.state', '=', 'draft'), ('order_line_state_id','!=',4)]</field>
+        </record>
+
+        <record model="ir.ui.view" id="waiting_queue_filter">
+            <field name="name">waiting.queue.search</field>
+            <field name="model">waiting.queue</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="sequence"/>
+                    <field name="partner_id"/>
+                    <filter name="no_of_person"/>
+                    <group expand="0" string="Group By...">
+                        <filter icon="terp-stock_symbol-selection" string="Stage" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id='waiting_queue_tree_view' model='ir.ui.view'>
+            <field name='name'>waiting.queue.tree.view</field>
+            <field name='model'>waiting.queue</field>
+            <field name='type'>tree</field>
+            <field name='arch' type='xml'>
+                <tree string="Waiting Queue" colors="red:state=='allow';blue:state=='left'" editable="bottom">
+                    <field name="sequence" />
+                    <field name="partner_id" />
+                    <field name="no_of_person" required="1"/>
+                    <field name="Resrvation_date"/>
+                    <field name="state" readonly="1"/>
+<!--                    <button name="change_state_allow" string="Allow" type="object" icon="terp-locked"/>-->
+                    <button name="%(action_waiting_queue_allow_state)d" string="Allowed" type="action" icon="terp-check" attrs="{'invisible':['|',('state','=','left'),('state','=','allow')]}"/>
+                    <button name="change_state_left" string="Left" type="object"  icon="gtk-go-forward" attrs="{'invisible':['|',('state','=','left')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='waiting_queue_form_view' model='ir.ui.view'>
+            <field name='name'>waiting.queue.form.view</field>
+            <field name='model'>waiting.queue</field>
+            <field name='arch' type='xml'>
+                <form string="Waiting Queue">
+                    <sheet name="Waiting Queue">
+                        <group col="4" colspan="2">
+                            <field name="sequence" />
+                            <field name="partner_id" />
+                        </group>
+                        <group col="4" colspan="2">
+                            <field name="no_of_person" required="1"/>
+                            <field name="Resrvation_date"/>
+                        </group>
+                        <group col="4" colspan="2">
+                            <field name="state" readonly="1"/>
+                        </group>
+                        <newline/>
+                        <field name="table_ids" colspan="4" nolabel="1" />
+                        <button name="%(action_waiting_queue_allow_state)d" string="Allowed" type="action" icon="terp-check" attrs="{'invisible':['|',('state','=','left'),('state','=','allow')]}"/>
+                        <button name="change_state_left" string="Left" type="object"  icon="gtk-go-forward" attrs="{'invisible':['|',('state','=','left'),('state','=','allow')]}"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id='action_waiting_queue_view' model='ir.actions.act_window'>
+            <field name='name'>Waiting Queue</field>
+            <field name='res_model'>waiting.queue</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+            <field name="search_view_id" ref="waiting_queue_filter"/>
+        </record>
+
+        <!-- Pin Code View, Action, Menu -->
+        <record id="pin_code_form_view" model="ir.ui.view">
+            <field name="name">pin_code.form</field>
+            <field name="model">pin.code</field>
+            <field name="arch" type="xml">
+                <form string="Pin Code">
+                    <sheet>
+                        <group col="4" colspan="2">
+                            <field name="name" required="1" />
+                            <field name="code" required="1" password="True"/>
+                            <field name="date_from" required="1" />
+                            <field name="date_to" required="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="pin_code_tree_view" model="ir.ui.view">
+            <field name="name">pin_code.tree</field>
+            <field name="model">pin.code</field>
+            <field name="arch" type="xml">
+                <tree string="Pin Code">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="pin_code_search_view" model="ir.ui.view">
+            <field name="name">pin_code.search</field>
+            <field name="model">pin.code</field>
+            <field name="arch" type="xml">
+                <search string="Pin Code Search">
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id='action_pin_code_view' model='ir.actions.act_window'>
+            <field name='name'>Pin Code</field>
+            <field name='res_model'>pin.code</field>
+            <field name='view_type'>form</field>
+            <field name='view_mode'>tree,form</field>
+        </record>
+
+        <menuitem parent="point_of_sale.menu_point_config_product" id="menu_pin_code" 
+                  action="action_pin_code_view" sequence="6" 
+                  groups="point_of_sale.group_pos_manager"/>
+        <menuitem name="Configuration" parent="point_of_sale.menu_point_root"
+           id="point_of_sale.menu_point_config_product"   sequence="25" groups="point_of_sale.group_pos_user"/>
+        <menuitem action="action_waiting_queue_view" id="menu_point_of_sale_waiting_queue"
+            parent="point_of_sale.menu_point_config_product" sequence="1" groups="point_of_sale.group_pos_user"/>
+        <menuitem name="Point of Sale"
+           id="point_of_sale.menu_point_root"
+           groups="point_of_sale.group_pos_manager,point_of_sale.group_pos_user,group_kitchen_chefe"
+           sequence="30"/>
+        <menuitem action="point_of_sale.action_pos_session_opening"
+           parent="point_of_sale.menu_point_of_sale"
+           id="point_of_sale.menu_pos_session_opening" sequence="0" groups="point_of_sale.group_pos_user,point_of_sale.group_pos_manager"/>
+        <menuitem action="point_of_sale.product_pos_category_action" id="point_of_sale.menu_product_pos_category" parent="point_of_sale.menu_point_of_sale_product" sequence="0" groups="point_of_sale.group_pos_manager"/>
+        <menuitem name="Products" id="point_of_sale.menu_point_of_sale_product" parent="point_of_sale.menu_point_root" sequence="15" groups="point_of_sale.group_pos_manager"/>
+        <menuitem parent="point_of_sale.menu_point_of_sale" id="menu_point_of_sale_order_line" action="action_pos_order_line_view" sequence="3" groups="group_kitchen_chefe,point_of_sale.group_pos_user"/>
+    </data> 
+</openerp>
