@@ -30,6 +30,7 @@ import urllib, urllib2
 from urllib import urlencode
 from openerp import workflow
 from openerp.tools.translate import _
+import time
 
 class pos_config(orm.Model):
     _inherit = 'pos.config'
